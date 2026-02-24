@@ -9,13 +9,13 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("Email service error:", error.message);
-  } else {
-    console.log("Email service ready");
-  }
-});
+// transporter.verify((error, success) => {
+//   if (error) {
+//     console.error("Email service error:", error.message);
+//   } else {
+//     console.log("Email service ready");
+//   }
+// });
 
 const sendPasswordResetEmail = async (userEmail, userName, resetUrl) => {
   try {
