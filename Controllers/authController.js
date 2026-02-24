@@ -1,6 +1,6 @@
 const User = require("../Models/userModel");
 const ResetToken = require("../Models/resetTokenModel");
-const Notification = require("../Models/notificationModel");
+// const Notification = require("../Models/notificationModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
@@ -129,19 +129,6 @@ exports.forgotPassword = async (req, res) => {
     // Create reset link
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
     // const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
-
-    // Create In-App Notification
-    await Notification.create({
-      userId: user._id,
-      title: "Password Reset Request",
-      message: `A password reset link has been sent to your email: ${user.email}`,
-      type: "info",
-      data: {
-        email: user.email,
-        resetLink: resetUrl,
-        info: "Click the link below to reset your password. This link will expire in 15 minutes."
-      }
-    });
 
     // Send email
     await sendPasswordResetEmail(user.email, user.name, resetUrl);
@@ -274,27 +261,6 @@ exports.updateProfile = async (req, res) => {
       }
     });
 
-  } catch (error) {
-    res.status(500).json({ msg: error.message });
-  }
-};
-
-// ================= NOTIFICATIONS =================
-exports.getNotifications = async (req, res) => {
-  try {
-    const notifications = await Notification.find({ userId: req.user.id })
-      .sort({ createdAt: -1 })
-      .limit(20);
-    res.json(notifications);
-  } catch (error) {
-    res.status(500).json({ msg: error.message });
-  }
-};
-
-exports.markNotificationAsRead = async (req, res) => {
-  try {
-    await Notification.findByIdAndUpdate(req.params.id, { isRead: true });
-    res.json({ msg: "Notification marked as read" });
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
