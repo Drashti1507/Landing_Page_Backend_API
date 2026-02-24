@@ -1,8 +1,7 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 2525,
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
@@ -20,7 +19,7 @@ const transporter = nodemailer.createTransport({
 const sendPasswordResetEmail = async (userEmail, userName, resetUrl) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: `"Gratech Support" <${process.env.EMAIL_USER}>`,
       to: userEmail,
       subject: "Password Reset Link - Gratech",
       html: `

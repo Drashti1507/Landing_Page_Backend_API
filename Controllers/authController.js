@@ -95,9 +95,14 @@ exports.forgotPassword = async (req, res) => {
 
     const user = await User.findOne({ email });
 
+    // if (!user) {
+    //   return res.status(404).json({
+    //     msg: "User not found"
+    //   });
+    // }
     if (!user) {
-      return res.status(404).json({
-        msg: "User not found"
+      return res.json({
+        msg: "If this email exists, a reset link has been sent."
       });
     }
 
@@ -122,7 +127,8 @@ exports.forgotPassword = async (req, res) => {
     });
 
     // Create reset link
-    const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    // const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
 
     // Create In-App Notification
     await Notification.create({
@@ -194,8 +200,10 @@ exports.resetPassword = async (req, res) => {
     await user.save();
 
     // Mark token used
-    resetToken.used = true;
-    await resetToken.save();
+    // resetToken.used = true;
+    // await resetToken.save();
+
+    await ResetToken.deleteOne({ _id: resetToken._id });
 
     res.json({
       msg: "Password reset successful. Please login."
